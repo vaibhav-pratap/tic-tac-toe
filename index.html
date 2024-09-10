@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-dark text-light">
+    <div class="container mt-5">
+        <h1 class="text-center">Tic Tac Toe</h1>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 text-center">
+                <div class="scoreboard mb-3">
+                    <div>Player 1: <span id="player1-score">0</span></div>
+                    <div>Player 2/AI: <span id="player2-score">0</span></div>
+                </div>
+                <div class="btn-group mb-3" role="group">
+                    <button class="btn btn-primary" id="pvp">Player vs Player</button>
+                    <button class="btn btn-secondary" id="pve-easy">Player vs AI (Easy)</button>
+                    <button class="btn btn-warning" id="pve-hard">Player vs AI (Hard)</button>
+                    <button class="btn btn-danger" id="ai-vs-ai">AI vs AI (Simulation)</button>
+                </div>
+                <div class="game-board justify-content-center">
+                    <div class="cell" data-index="0"></div>
+                    <div class="cell" data-index="1"></div>
+                    <div class="cell" data-index="2"></div>
+                    <div class="cell" data-index="3"></div>
+                    <div class="cell" data-index="4"></div>
+                    <div class="cell" data-index="5"></div>
+                    <div class="cell" data-index="6"></div>
+                    <div class="cell" data-index="7"></div>
+                    <div class="cell" data-index="8"></div>
+                </div>
+                <div class="status mt-3">
+                    <p id="game-status">Select a game variant to start!</p>
+                </div>
+                <button class="btn btn-light mt-3" id="reset">Reset Game</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+body {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+h1 {
+    color: #ffcc00;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
+    margin: 20px auto;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color: #222;
+    border: 2px solid #333;
+    font-size: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: #ffcc00;
+}
+
+.cell:hover {
+    background-color: #444;
+}
+
+.status p {
+    font-size: 1.2rem;
+}
+
+.btn-group .btn {
+    margin-right: 5px;
+}
