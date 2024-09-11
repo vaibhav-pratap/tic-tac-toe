@@ -46,9 +46,11 @@ function handleCellClick(event) {
     checkForWinner();
 
     if (gameMode === 'pvp') {
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Switch player
+        // Player vs Player mode - switch turn
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; 
     } else if (gameMode === 'pve-easy' || gameMode === 'pve-hard') {
-        currentPlayer = 'O'; // AI's turn
+        // After player's move, AI plays next
+        currentPlayer = 'O'; 
         if (gameActive) aiMove(gameMode === 'pve-easy' ? 'easy' : 'hard');
     }
 }
@@ -63,12 +65,14 @@ function checkForWinner() {
         }
     }
     if (roundWon) {
+        // Announce winner and update scores
         gameStatusElement.textContent = `${currentPlayer} has won!`;
         updateScores(currentPlayer);
         gameActive = false;
         return;
     }
     if (!board.includes(null)) {
+        // If the board is full and no winner, it's a draw
         gameStatusElement.textContent = "It's a draw!";
         gameActive = false;
         return;
@@ -86,14 +90,16 @@ function updateScores(winner) {
 }
 
 function resetGame() {
+    // Reset the board and game state
     board.fill(null);
     cells.forEach(cell => (cell.textContent = ''));
     gameActive = true;
     gameStatusElement.textContent = "Game Reset. Let's Play!";
-    currentPlayer = 'X';
+    currentPlayer = 'X'; 
 }
 
 function resetScore() {
+    // Reset scores and board
     resetGame();
     player1Score = 0;
     player2Score = 0;
@@ -102,6 +108,7 @@ function resetScore() {
 }
 
 function startGame(mode) {
+    // Initialize game based on selected mode
     resetGame();
     gameMode = mode;
     gameStatusElement.textContent = `Starting game mode: ${mode.toUpperCase()}`;
@@ -109,48 +116,70 @@ function startGame(mode) {
     if (mode === 'ai-vs-ai') {
         currentPlayer = 'X';
         gameActive = true;
-        aiMove('easy');
+        aiMove('easy'); // Start AI vs AI mode
     }
 }
 
 function aiMove(difficulty) {
+    // AI makes a move based on the selected difficulty
     setTimeout(() => {
         let availableMoves = board.map((cell, index) => (cell === null ? index : null)).filter(index => index !== null);
 
         let chosenMove;
         if (difficulty === 'easy') {
-            chosenMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+            // Easy mode: AI has a 70% chance of blocking the player and 30% chance to make random move
+            if (Math.random() > 0.3) {
+                chosenMove = findBestBlockingMove('X', 'O');
+            } else {
+                chosenMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+            }
         } else if (difficulty === 'hard') {
-            // Minimax implementation for hard difficulty
-            chosenMove = minimax(board, 'O').index; // Use minimax to find the best move
+            // Hard mode: 90% chance to use minimax, 10% chance to make random move
+            if (Math.random() > 0.1) {
+                chosenMove = minimax(board, 'O').index;
+            } else {
+                chosenMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+            }
         }
 
         if (chosenMove !== undefined) {
+            // AI makes the move
             board[chosenMove] = currentPlayer;
             document.querySelector(`.cell[data-index='${chosenMove}']`).textContent = currentPlayer;
             checkForWinner();
 
             if (gameMode === 'ai-vs-ai' && gameActive) {
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Switch turns for AI vs AI
-                aiMove('easy'); // Continue AI vs AI in easy mode
+                // Continue AI vs AI turns
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; 
+                aiMove('easy');
             } else {
-                currentPlayer = 'X'; // Back to player's turn if it's Player vs AI
+                currentPlayer = 'X'; // Back to player's turn
             }
         }
-    }, 500);
+    }, 500); // Delay for AI move to make it seem natural
 }
 
-// Simple minimax function to enhance AI difficulty in hard mode
+function findBestBlockingMove(player, ai) {
+    // AI attempts to block player's winning move
+    for (let condition of winConditions) {
+        const [a, b, c] = condition;
+        if (board[a] === player && board[b] === player && board[c] === null) return c;
+        if (board[a] === player && board[c] === player && board[b] === null) return b;
+        if (board[b] === player && board[c] === player && board[a] === null) return a;
+    }
+    // If no immediate threat, return the first available move
+    return board.map((cell, index) => (cell === null ? index : null)).filter(index => index !== null)[0];
+}
+
+// Minimax algorithm for Hard mode
 function minimax(newBoard, player) {
     const availableSpots = newBoard.map((cell, index) => (cell === null ? index : null)).filter(index => index !== null);
 
-    // Check for terminal states (win, lose, draw)
     const winner = checkWinner(newBoard);
     if (winner === 'X') return { score: -10 };
     if (winner === 'O') return { score: 10 };
     if (availableSpots.length === 0) return { score: 0 };
 
-    // Collect moves
     const moves = [];
     for (let i = 0; i < availableSpots.length; i++) {
         const move = {};
@@ -169,7 +198,6 @@ function minimax(newBoard, player) {
         moves.push(move);
     }
 
-    // Best move selection
     let bestMove;
     if (player === 'O') {
         let bestScore = -Infinity;
